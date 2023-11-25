@@ -20,3 +20,27 @@ LIMIT 1;
 -- Weather Observation Station 16
 SELECT ROUND(MIN(LAT_N), 4) FROM STATION
 WHERE LAT_N > 38.7780;
+
+-- Weather Observation Station 17
+SELECT ROUND(LONG_W, 4) FROM STATION
+WHERE LAT_N IN (SELECT MIN(LAT_N) FROM STATION
+                          WHERE LAT_N > 38.7780);
+
+-- Weather Observation Station 18
+SELECT ROUND(ABS((MIN(LAT_N)-MAX(LAT_N))
+                 +(MIN(LONG_W)-MAX(LONG_W))),4) 
+FROM STATION
+
+-- Weather Observation Station 19
+SELECT ROUND( SQRT(POWER((MIN(LAT_N)-MAX(LAT_N)),2) 
+             + POWER((MIN(LONG_W)-MAX(LONG_W)),2)),4) 
+FROM STATION
+
+-- Weather Observation Station 20
+SELECT ROUND(AVG(DISTINCT LAT_N),4)
+FROM (
+  SELECT LAT_N, ROW_NUMBER() OVER (ORDER BY LAT_N) AS RNK
+  FROM STATION
+) AS TEMP
+WHERE RNK IN ( (SELECT CEIL(COUNT(*)/2.0) FROM STATION),
+(SELECT CEIL((COUNT(*)/2.0)+0.1) FROM STATION) );
